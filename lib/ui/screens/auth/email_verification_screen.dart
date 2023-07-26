@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
+import 'otp_verification_screen.dart';
+
+
 class EmailVerificationScreen extends StatelessWidget {
   const EmailVerificationScreen({Key? key}) : super(key: key);
 
@@ -16,7 +19,7 @@ class EmailVerificationScreen extends StatelessWidget {
               children: [
                 const SizedBox(height: 64,),
                 Text(
-                  'Get Started With',
+                  'Verify your email',
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 4,),
@@ -43,7 +46,9 @@ class EmailVerificationScreen extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> const otpVerificationScreen()));
+                    },
                     child: const Icon(Icons.arrow_circle_right_outlined),
                   ),
                 ),
