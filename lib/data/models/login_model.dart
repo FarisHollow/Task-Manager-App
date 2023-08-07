@@ -1,18 +1,18 @@
 class LoginModel {
   String? status;
   String? token;
-  Data? data;
+  UserData? data;
 
   LoginModel({this.status, this.token, this.data});
 
   LoginModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     token = json['token'];
-    data = json['data'] != null ? Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? new UserData.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = new Map<String, dynamic>();
     data['status'] = this.status;
     data['token'] = this.token;
     if (this.data != null) {
@@ -22,16 +22,16 @@ class LoginModel {
   }
 }
 
-class Data {
+class UserData {
   String? email;
   String? firstName;
   String? lastName;
   String? mobile;
   String? photo;
 
-  Data({this.email, this.firstName, this.lastName, this.mobile, this.photo});
+  UserData({this.email, this.firstName, this.lastName, this.mobile, this.photo});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  UserData.fromJson(Map<String, dynamic> json) {
     email = json['email'];
     firstName = json['firstName'];
     lastName = json['lastName'];
@@ -40,12 +40,12 @@ class Data {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['email'] = email;
-    data['firstName'] = firstName;
-    data['lastName'] = lastName;
-    data['mobile'] = mobile;
-    data['photo'] = photo;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['email'] = this.email;
+    data['firstName'] = this.firstName;
+    data['lastName'] = this.lastName;
+    data['mobile'] = this.mobile;
+    data['photo'] = this.photo;
     return data;
   }
 }

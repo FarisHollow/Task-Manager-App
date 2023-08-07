@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:task_manager/ui/screens/splash_screen.dart';
 
 class TaskManagerApp extends StatefulWidget {
-  static GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
+  static GlobalKey<NavigatorState> globalKey = GlobalKey<NavigatorState>();
   const TaskManagerApp({Key? key}) : super(key: key);
 
   @override
@@ -13,9 +13,8 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      key: TaskManagerApp.globalKey,
+      navigatorKey: TaskManagerApp.globalKey,
       title: 'Task Manager',
-      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.light,
         primarySwatch: Colors.green,
