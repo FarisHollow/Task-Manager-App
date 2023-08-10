@@ -140,8 +140,32 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                     return TaskListTile(
                       data: _taskListModel.data![index],
                       onDeleteTap: () {
-                        deleteTask(_taskListModel.data![index].sId!);
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text("Confirm Delete"),
+                              content: const Text("Are you sure you want to delete this task?"),
+                              actions: [
+                                TextButton(
+                                  child: const Text("Cancel"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                TextButton(
+                                  child: const Text("Delete"),
+                                  onPressed: () {
+                                    deleteTask(_taskListModel.data![index].sId!);
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       },
+
                       onEditTap: () {
                         // showEditBottomSheet(_taskListModel.data![index]);
                         showStatusUpdateBottomSheet(_taskListModel.data![index]);

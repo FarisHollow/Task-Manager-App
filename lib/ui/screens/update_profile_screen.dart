@@ -130,6 +130,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                               Visibility(
                                   visible: imageFile != null,
                                   child: Text(imageFile?.name ?? ''))
+
                             ],
                           ),
                         ),
