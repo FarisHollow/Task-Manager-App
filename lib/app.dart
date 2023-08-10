@@ -15,6 +15,7 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
     return MaterialApp(
       navigatorKey: TaskManagerApp.globalKey,
       title: 'Task Manager',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.light,
         primarySwatch: Colors.green,
