@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/data/models/network_response.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utils/urls.dart';
@@ -37,13 +38,19 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
       _titleTEController.clear();
       _descriptionTEController.clear();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Task added successfully')));
+        Get.snackbar("Added", "A new task added",
+            snackPosition: SnackPosition.BOTTOM,
+            showProgressIndicator: true,
+            animationDuration: const Duration(milliseconds: 500),
+            icon: const Icon(Icons.done_outline));
       }
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Task add failed!')));
+        Get.snackbar("Opps!", "Could not add new task",
+            snackPosition: SnackPosition.BOTTOM,
+            showProgressIndicator: true,
+            animationDuration: const Duration(milliseconds: 500),
+            icon: const Icon(Icons.error_outline_rounded));
       }
     }
   }

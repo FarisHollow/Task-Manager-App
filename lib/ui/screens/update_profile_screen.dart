@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:task_manager/data/models/auth_utility.dart';
 import 'package:task_manager/data/models/login_model.dart';
@@ -66,13 +67,19 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       AuthUtility.updateUserInfo(userData);
       _passwordTEController.clear();
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Profile updated!')));
+        Get.snackbar("Updated!", "You updated your information successfully",
+            snackPosition: SnackPosition.BOTTOM,
+            showProgressIndicator: true,
+            animationDuration: const Duration(milliseconds: 500),
+            icon: const Icon(Icons.done));
       }
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Profile update failed! Try again.')));
+        Get.snackbar("Opps!", "Something went wrong!",
+            snackPosition: SnackPosition.BOTTOM,
+            showProgressIndicator: true,
+            animationDuration: const Duration(milliseconds: 500),
+            icon: const Icon(Icons.error_outline_rounded));
       }
     }
   }

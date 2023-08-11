@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/data/models/auth_utility.dart';
 import 'package:task_manager/data/models/login_model.dart';
 import 'package:task_manager/data/models/network_response.dart';
@@ -49,9 +50,15 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Incorrect email or password')));
-      }
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //       const SnackBar(content: Text('Incorrect email or password')));
+      // }
+
+        Get.snackbar("Opps!", "Incorrect email or password",
+        snackPosition: SnackPosition.TOP,
+        showProgressIndicator: true,
+        animationDuration: const Duration(milliseconds: 500),
+        icon: const Icon(Icons.error_outline_rounded));}
     }
   }
 

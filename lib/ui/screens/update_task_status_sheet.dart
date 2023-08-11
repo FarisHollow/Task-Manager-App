@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/data/models/network_response.dart';
 import 'package:task_manager/data/models/task_list_model.dart';
 import 'package:task_manager/data/services/network_caller.dart';
@@ -41,12 +42,20 @@ class _UpdateTaskStatusSheetState extends State<UpdateTaskStatusSheet> {
     if (response.isSuccess) {
       widget.onUpdate();
       if (mounted) {
+        Get.snackbar("Updated!", "Task updated to another status successfully",
+            snackPosition: SnackPosition.TOP,
+            showProgressIndicator: true,
+            animationDuration: const Duration(milliseconds: 500),
+            icon: const Icon(Icons.done));
         Navigator.pop(context);
       }
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Update task status has been failed')));
+        Get.snackbar("Opps!", "Could not update the task status",
+            snackPosition: SnackPosition.BOTTOM,
+            showProgressIndicator: true,
+            animationDuration: const Duration(milliseconds: 500),
+            icon: const Icon(Icons.error_outline_rounded));
       }
     }
   }

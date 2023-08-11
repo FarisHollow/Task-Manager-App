@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
 import '../../../data/models/network_response.dart';
@@ -61,17 +62,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
 
       if(mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(
-            const SnackBar(content: Text('Registration succeed')));
+        Get.snackbar("Done!", "Registration complete",
+            snackPosition: SnackPosition.TOP,
+            showProgressIndicator: true,
+            animationDuration: const Duration(milliseconds: 500),
+            icon: const Icon(Icons.done));
       }
     }else {
 
       if(mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(
-            const SnackBar(content: Text('Registration failed!')));
-      }
+        Get.snackbar("Opps!", "Registration failed",
+            snackPosition: SnackPosition.TOP,
+            showProgressIndicator: true,
+            animationDuration: const Duration(milliseconds: 500),
+            icon: const Icon(Icons.error_outline_rounded));}
 
     }
   }
