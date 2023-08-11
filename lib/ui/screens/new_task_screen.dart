@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/data/models/network_response.dart';
 import 'package:task_manager/data/models/summary_count_model.dart';
 import 'package:task_manager/data/models/task_list_model.dart';
@@ -140,30 +141,31 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                     return TaskListTile(
                       data: _taskListModel.data![index],
                       onDeleteTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text("Confirm Delete"),
-                              content: const Text("Are you sure you want to delete this task?"),
-                              actions: [
-                                TextButton(
-                                  child: const Text("Cancel"),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                                TextButton(
-                                  child: const Text("Delete"),
-                                  onPressed: () {
-                                    deleteTask(_taskListModel.data![index].sId!);
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
-                            );
+
+                        Get.defaultDialog(
+                          title: "Alert!",
+                          titlePadding: const EdgeInsets.all(8),
+
+                          middleText: "Confirm Delete?",
+                          barrierDismissible: false,
+
+                          textConfirm: "Confirm",
+                          textCancel: "Cancel",
+
+                          backgroundColor: Colors.white70,
+                          radius: 3,
+
+                          onConfirm: (){
+                            deleteTask(_taskListModel.data![index].sId!);
+                            Navigator.of(context).pop();
+
                           },
+                          onCancel: (){
+                          Navigator.of(context).pop();}
+
+
                         );
+
                       },
 
                       onEditTap: () {
