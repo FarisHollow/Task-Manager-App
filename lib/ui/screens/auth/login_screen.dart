@@ -8,6 +8,7 @@ import 'package:task_manager/data/utils/urls.dart';
 import 'package:task_manager/ui/screens/bottom_nav_base_screen.dart';
 import 'package:task_manager/ui/screens/email_verification_screen.dart';
 import 'package:task_manager/ui/screens/auth/signup_screen.dart';
+import 'package:task_manager/ui/state_managers/login_controller.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -21,46 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
 
-  bool _loginInProgress = false;
 
-  Future<void> login() async {
-    _loginInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
-    Map<String, dynamic> requestBody = {
-      "email": _emailTEController.text.trim(),
-      "password": _passwordTEController.text
-    };
-    final NetworkResponse response =
-    await NetworkCaller().postRequest(Urls.login, requestBody);
-    _loginInProgress = false;
-    if (mounted) {
-      setState(() {});
-    }
-    if (response.isSuccess) {
-      LoginModel model = LoginModel.fromJson(response.body!);
-      await AuthUtility.saveUserInfo(model);
-      if (mounted) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const BottomNavBaseScreen()),
-                (route) => false);
-      }
-    } else {
-      if (mounted) {
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //       const SnackBar(content: Text('Incorrect email or password')));
-      // }
-
-        Get.snackbar("Opps!", "Incorrect email or password",
-        snackPosition: SnackPosition.TOP,
-        showProgressIndicator: true,
-        animationDuration: const Duration(milliseconds: 500),
-        icon: const Icon(Icons.error_outline_rounded));}
-    }
-  }
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final emailRegex =
@@ -125,22 +87,41 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(
                         height: 16,
                       ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: Visibility(
-                          visible: _loginInProgress == false,
-                          replacement: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                          child: ElevatedButton(
-                              onPressed: () {
-                                if(!_formKey.currentState!.validate()){
-                                  return;
-                                }
-                                login();
-                              },
-                              child: const Icon(Icons.arrow_forward_ios)),
-                        ),
+                      GetBuilder<LoginController>(
+                        builder: (loginController) {
+                          return SizedBox(
+                            width: double.infinity,
+                            child: Visibility(
+                              visible: loginController.loginInProgress == false,
+                              replacement: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    if(!_formKey.currentState!.validate()){
+                                      return;
+                                    }
+
+
+                                    loginController.login(
+                                        _emailTEController.text.trim(),
+                                        _passwordTEController.text
+                                    ).then((result) {
+                                      if(result == true){
+                                        Get.offAll(const BottomNavBaseScreen());
+                                      }else{
+                                        Get.snackbar("Opps!", "Failed to login",
+                                            snackPosition: SnackPosition.TOP,
+                                            showProgressIndicator: true,
+                                            animationDuration: const Duration(milliseconds: 500),
+                                            icon: const Icon(Icons.error_outline_rounded));
+                                      }
+                                    });
+                                  },
+                                  child: const Icon(Icons.arrow_forward_ios)),
+                            ),
+                          );
+                        }
                       ),
                       const SizedBox(
                         height: 16,
