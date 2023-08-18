@@ -7,6 +7,7 @@ import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utils/urls.dart';
 import 'package:task_manager/ui/screens/add_new_task_screen.dart';
 import 'package:task_manager/ui/screens/update_task_status_sheet.dart';
+import 'package:task_manager/ui/state_managers/summary_count_controller.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 import 'package:task_manager/ui/widgets/summary_card.dart';
 import 'package:task_manager/ui/widgets/task_list_tile.dart';
@@ -22,40 +23,23 @@ class NewTaskScreen extends StatefulWidget {
 }
 
 class _NewTaskScreenState extends State<NewTaskScreen> {
-  bool _getCountSummaryInProgress = false, _getNewTaskInProgress = false;
-  SummaryCountModel _summaryCountModel = SummaryCountModel();
+  bool _getNewTaskInProgress = false;
+
   TaskListModel _taskListModel = TaskListModel();
+  SummaryCountController _summaryCountController = Get.find<
+      SummaryCountController>();
 
   @override
   void initState() {
     super.initState();
     // after widget binding
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      getCountSummary();
+      _summaryCountController.getCountSummary();
       getNewTasks();
     });
   }
 
-  Future<void> getCountSummary() async {
-    _getCountSummaryInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
-    final NetworkResponse response =
-    await NetworkCaller().getRequest(Urls.taskStatusCount);
-    if (response.isSuccess) {
-      _summaryCountModel = SummaryCountModel.fromJson(response.body!);
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('get new task data failed')));
-      }
-    }
-    _getCountSummaryInProgress = false;
-    if (mounted) {
-      setState(() {});
-    }
-  }
+
 
   Future<void> getNewTasks() async {
     _getNewTaskInProgress = true;
@@ -101,35 +85,46 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
         child: Column(
           children: [
             const UserProfileAppBar(),
-            _getCountSummaryInProgress
-                ? const LinearProgressIndicator()
-                : Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                height: 80,
-                width: double.infinity,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _summaryCountModel.data?.length ?? 0,
-                  itemBuilder: (context, index) {
-                    return SummaryCard(
-                      title: _summaryCountModel.data![index].sId ?? 'New',
-                      number: _summaryCountModel.data![index].sum ?? 0,
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return const Divider(
-                      height: 4,
-                    );
-                  },
-                ),
-              ),
+            GetBuilder<SummaryCountController>(
+                builder: (_) {
+                  if (_summaryCountController.getCountSummaryInProgress ==
+                      true) {
+                    return const Center(child: LinearProgressIndicator());
+                  }
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      height: 80,
+                      width: double.infinity,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _summaryCountController.summaryCountModel
+                            .data?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          return SummaryCard(
+                            title: _summaryCountController.summaryCountModel
+                                .data![index].sId ?? 'New',
+                            number: _summaryCountController.summaryCountModel
+                                .data![index].sum ?? 0,
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return const Divider(
+                            height: 4,
+                          );
+                        },
+                      ),
+                    ),
+                  );
+                }
+
             ),
+
             Expanded(
               child: RefreshIndicator(
                 onRefresh: () async {
                   getNewTasks();
-                  getCountSummary();
+                  _summaryCountController.getCountSummary();
                 },
                 child: _getNewTaskInProgress
                     ? const Center(
@@ -141,36 +136,35 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                     return TaskListTile(
                       data: _taskListModel.data![index],
                       onDeleteTap: () {
-
                         Get.defaultDialog(
-                          title: "Alert!",
-                          titlePadding: const EdgeInsets.all(8),
+                            title: "Alert!",
+                            titlePadding: const EdgeInsets.all(8),
 
-                          middleText: "Confirm Delete?",
-                          barrierDismissible: false,
+                            middleText: "Confirm Delete?",
+                            barrierDismissible: false,
 
-                          textConfirm: "Confirm",
-                          textCancel: "Cancel",
+                            textConfirm: "Confirm",
+                            textCancel: "Cancel",
 
-                          backgroundColor: Colors.white70,
-                          radius: 3,
+                            backgroundColor: Colors.white70,
+                            radius: 3,
 
-                          onConfirm: (){
-                            deleteTask(_taskListModel.data![index].sId!);
-                            Navigator.of(context).pop();
-
-                          },
-                          onCancel: (){
-                          Navigator.of(context).pop();}
+                            onConfirm: () {
+                              deleteTask(_taskListModel.data![index].sId!);
+                              Navigator.of(context).pop();
+                            },
+                            onCancel: () {
+                              Navigator.of(context).pop();
+                            }
 
 
                         );
-
                       },
 
                       onEditTap: () {
                         // showEditBottomSheet(_taskListModel.data![index]);
-                        showStatusUpdateBottomSheet(_taskListModel.data![index]);
+                        showStatusUpdateBottomSheet(_taskListModel
+                            .data![index]);
                       },
                     );
                   },
@@ -211,6 +205,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
       },
     );
   }
+
 
   void showStatusUpdateBottomSheet(TaskData task) {
     showModalBottomSheet(

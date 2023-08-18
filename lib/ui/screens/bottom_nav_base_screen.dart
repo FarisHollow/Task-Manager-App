@@ -42,9 +42,9 @@ class _BottomNavBaseScreenState extends State<BottomNavBaseScreen> {
           }
         },
         items: [
-        BottomNavigationBarItem(icon: Icon(Icons.ac_unit), label: 'New'),
+        BottomNavigationBarItem(icon: Icon(Icons.add_circle), label: 'New'),
         BottomNavigationBarItem(icon: Icon(Icons.account_tree), label: 'In Progress'),
-        BottomNavigationBarItem(icon: Icon(Icons.cancel_outlined), label: 'Cancel'),
+        BottomNavigationBarItem(icon: Icon(Icons.cancel_outlined), label: 'Canceled'),
         BottomNavigationBarItem(icon: Icon(Icons.done_all), label: 'Completed'),
       ],),
     );
