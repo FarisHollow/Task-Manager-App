@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task_manager/data/models/network_response.dart';
-import 'package:task_manager/data/models/summary_count_model.dart';
 import 'package:task_manager/data/models/task_list_model.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utils/urls.dart';
 import 'package:task_manager/ui/screens/add_new_task_screen.dart';
 import 'package:task_manager/ui/screens/update_task_status_sheet.dart';
+import 'package:task_manager/ui/state_managers/delete_task_controller.dart';
 import 'package:task_manager/ui/state_managers/summary_count_controller.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 import 'package:task_manager/ui/widgets/summary_card.dart';
@@ -26,8 +26,8 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   bool _getNewTaskInProgress = false;
 
   TaskListModel _taskListModel = TaskListModel();
-  SummaryCountController _summaryCountController = Get.find<
-      SummaryCountController>();
+  final SummaryCountController _summaryCountController = Get.find<SummaryCountController>();
+  final DeleteTaskController _deleteTaskController = Get.find<DeleteTaskController>();
 
   @override
   void initState() {
@@ -62,21 +62,6 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     }
   }
 
-  Future<void> deleteTask(String taskId) async {
-    final NetworkResponse response =
-    await NetworkCaller().getRequest(Urls.deleteTask(taskId));
-    if (response.isSuccess) {
-      _taskListModel.data!.removeWhere((element) => element.sId == taskId);
-      if (mounted) {
-        setState(() {});
-      }
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Deletion of task has been failed')));
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,39 +118,48 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                     : ListView.separated(
                   itemCount: _taskListModel.data?.length ?? 0,
                   itemBuilder: (context, index) {
-                    return TaskListTile(
-                      data: _taskListModel.data![index],
-                      onDeleteTap: () {
-                        Get.defaultDialog(
-                            title: "Alert!",
-                            titlePadding: const EdgeInsets.all(8),
+                    return GetBuilder<DeleteTaskController>(
+                      builder: (_) {
+                        return TaskListTile(
+                          data: _taskListModel.data![index],
+                          onDeleteTap: () {
+                            Get.defaultDialog(
+                                title: "Alert!",
+                                titlePadding: const EdgeInsets.all(8),
 
-                            middleText: "Confirm Delete?",
-                            barrierDismissible: false,
+                                middleText: "Confirm Delete?",
+                                barrierDismissible: false,
 
-                            textConfirm: "Confirm",
-                            textCancel: "Cancel",
+                                textConfirm: "Confirm",
+                                textCancel: "Cancel",
 
-                            backgroundColor: Colors.white70,
-                            radius: 3,
+                                backgroundColor: Colors.white70,
+                                radius: 3,
 
-                            onConfirm: () {
-                              deleteTask(_taskListModel.data![index].sId!);
-                              Navigator.of(context).pop();
-                            },
-                            onCancel: () {
-                              Navigator.of(context).pop();
-                            }
+                                onConfirm: () {
+                                  _deleteTaskController.deleteTask(_taskListModel.data![index].sId!);
+                                   Get.back();
+                                   Get.snackbar("Deleted", "Task deleted successfully",
+                                   snackPosition: SnackPosition.BOTTOM);
+                                   getNewTasks();
 
 
+                                },
+                                onCancel: () {
+                                  Get.back();
+                                }
+
+
+                            );
+                          },
+
+                          onEditTap: () {
+                            // showEditBottomSheet(_taskListModel.data![index]);
+                            showStatusUpdateBottomSheet(_taskListModel
+                                .data![index]);
+                          },
                         );
-                      },
-
-                      onEditTap: () {
-                        // showEditBottomSheet(_taskListModel.data![index]);
-                        showStatusUpdateBottomSheet(_taskListModel
-                            .data![index]);
-                      },
+                      }
                     );
                   },
                   separatorBuilder: (BuildContext context, int index) {

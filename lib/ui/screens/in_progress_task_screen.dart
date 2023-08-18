@@ -5,6 +5,7 @@ import 'package:task_manager/data/models/task_list_model.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utils/urls.dart';
 import 'package:task_manager/ui/screens/update_task_status_sheet.dart';
+import 'package:task_manager/ui/state_managers/delete_task_controller.dart';
 import 'package:task_manager/ui/widgets/task_list_tile.dart';
 import 'package:task_manager/ui/widgets/user_profile_banner.dart';
 
@@ -18,6 +19,8 @@ class InProgressTaskScreen extends StatefulWidget {
 class _InProgressTaskScreenState extends State<InProgressTaskScreen> {
   bool _getProgressTasksInProgress = false;
   TaskListModel _taskListModel = TaskListModel();
+  final DeleteTaskController _deleteTaskController = Get.find<DeleteTaskController>();
+
 
   Future<void> getInProgressTasks() async {
     _getProgressTasksInProgress = true;
@@ -79,34 +82,42 @@ class _InProgressTaskScreenState extends State<InProgressTaskScreen> {
                   : ListView.separated(
                 itemCount: _taskListModel.data?.length ?? 0,
                 itemBuilder: (context, index) {
-                  return TaskListTile(
-                    data: _taskListModel.data![index],
-                    onDeleteTap: () {
-                      Get.defaultDialog(
-                          title: "Alert!",
-                          titlePadding: const EdgeInsets.all(8),
+                  return GetBuilder<DeleteTaskController>(
+                    builder: (_) {
+                      return TaskListTile(
+                        data: _taskListModel.data![index],
+                        onDeleteTap: () {
+                          Get.defaultDialog(
+                              title: "Alert!",
+                              titlePadding: const EdgeInsets.all(8),
 
-                          middleText: "Confirm Delete?",
-                          barrierDismissible: false,
+                              middleText: "Confirm Delete?",
+                              barrierDismissible: false,
 
-                          textConfirm: "Confirm",
-                          textCancel: "Cancel",
+                              textConfirm: "Confirm",
+                              textCancel: "Cancel",
 
-                          backgroundColor: Colors.white70,
-                          radius: 3,
+                              backgroundColor: Colors.white70,
+                              radius: 3,
 
-                          onConfirm: (){
-                            deleteTask(_taskListModel.data![index].sId!);
-                            Navigator.of(context).pop();
+                              onConfirm: () {
+                                _deleteTaskController.deleteTask(_taskListModel.data![index].sId!);
+                                Get.back();
+                                Get.snackbar("Deleted", "Task deleted successfully",
+                                    snackPosition: SnackPosition.BOTTOM);
+                                getInProgressTasks();
 
-                          },
-                          onCancel: (){
-                            Navigator.of(context).pop();}
 
+                              },
+                              onCancel: () {
+                                Get.back();
+                              }
 
+                          );
+                        },
+                        onEditTap: () {showStatusUpdateBottomSheet(_taskListModel.data![index]);},
                       );
-                    },
-                    onEditTap: () {showStatusUpdateBottomSheet(_taskListModel.data![index]);},
+                    }
                   );
                 },
                 separatorBuilder: (BuildContext context, int index) {
