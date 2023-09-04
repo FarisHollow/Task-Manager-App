@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/data/models/network_response.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utils/urls.dart';
@@ -42,17 +43,24 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     }
     if (response.isSuccess) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Password reset successful!')));
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const LoginScreen()),
-                (route) => false);
+        Get.snackbar("Update!", "Password reset successful",
+            snackPosition: SnackPosition.BOTTOM,
+            showProgressIndicator: true,
+            animationDuration: const Duration(milliseconds: 500),
+            icon: const Icon(Icons.done_outline));
+        // Navigator.pushAndRemoveUntil(
+        //     context,
+        //     MaterialPageRoute(builder: (context) => const LoginScreen()),
+        //         (route) => false);
+        Get.offAll(const LoginScreen());
       }
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Reset password has been failed!')));
+        Get.snackbar("Opps!", "Password reset failed",
+            snackPosition: SnackPosition.BOTTOM,
+            showProgressIndicator: true,
+            animationDuration: const Duration(milliseconds: 500),
+            icon: const Icon(Icons.error_outline_rounded));
       }
     }
   }
@@ -154,12 +162,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         ),
                         TextButton(
                             onPressed: () {
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                      const LoginScreen()),
-                                      (route) => false);
+                              // Navigator.pushAndRemoveUntil(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) =>
+                              //         const LoginScreen()),
+                              //         (route) => false);
+                              Get.offAll(const LoginScreen());
                             },
                             child: const Text('Sign in')),
                       ],

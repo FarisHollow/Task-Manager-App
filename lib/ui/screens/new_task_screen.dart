@@ -119,47 +119,47 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                   itemCount: _taskListModel.data?.length ?? 0,
                   itemBuilder: (context, index) {
                     return GetBuilder<DeleteTaskController>(
-                      builder: (_) {
-                        return TaskListTile(
-                          data: _taskListModel.data![index],
-                          onDeleteTap: () {
-                            Get.defaultDialog(
-                                title: "Alert!",
-                                titlePadding: const EdgeInsets.all(8),
+                        builder: (_) {
+                          return TaskListTile(
+                            data: _taskListModel.data![index],
+                            onDeleteTap: () {
+                              Get.defaultDialog(
+                                  title: "Alert!",
+                                  titlePadding: const EdgeInsets.all(8),
 
-                                middleText: "Confirm Delete?",
-                                barrierDismissible: false,
+                                  middleText: "Confirm Delete?",
+                                  barrierDismissible: false,
 
-                                textConfirm: "Confirm",
-                                textCancel: "Cancel",
+                                  textConfirm: "Confirm",
+                                  textCancel: "Cancel",
 
-                                backgroundColor: Colors.white70,
-                                radius: 3,
+                                  backgroundColor: Colors.white70,
+                                  radius: 3,
 
-                                onConfirm: () {
-                                  _deleteTaskController.deleteTask(_taskListModel.data![index].sId!);
-                                   Get.back();
-                                   Get.snackbar("Deleted", "Task deleted successfully",
-                                   snackPosition: SnackPosition.BOTTOM);
-                                   getNewTasks();
-
-
-                                },
-                                onCancel: () {
-                                  Get.back();
-                                }
+                                  onConfirm: () {
+                                    _deleteTaskController.deleteTask(_taskListModel.data![index].sId!);
+                                    Get.back();
+                                    Get.snackbar("Deleted", "Task deleted successfully",
+                                        snackPosition: SnackPosition.BOTTOM);
+                                    getNewTasks();
 
 
-                            );
-                          },
+                                  },
+                                  onCancel: () {
+                                    Get.back();
+                                  }
 
-                          onEditTap: () {
-                            // showEditBottomSheet(_taskListModel.data![index]);
-                            showStatusUpdateBottomSheet(_taskListModel
-                                .data![index]);
-                          },
-                        );
-                      }
+
+                              );
+                            },
+
+                            onEditTap: () {
+                              // showEditBottomSheet(_taskListModel.data![index]);
+                              showStatusUpdateBottomSheet(_taskListModel
+                                  .data![index]);
+                            },
+                          );
+                        }
                     );
                   },
                   separatorBuilder: (BuildContext context, int index) {

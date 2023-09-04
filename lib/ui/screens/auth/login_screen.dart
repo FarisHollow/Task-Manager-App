@@ -124,11 +124,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       Center(
                         child: InkWell(
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                    const EmailVerificationScreen()));
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) =>
+                            //         const EmailVerificationScreen()));
+                            Get.to(const EmailVerificationScreen());
                           },
                           child: const Text(
                             'Forgot Password?',
