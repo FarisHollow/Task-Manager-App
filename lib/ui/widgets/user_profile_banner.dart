@@ -20,7 +20,7 @@ class _UserProfileAppBarState extends State<UserProfileAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.green,
+      backgroundColor: Colors.teal,
       title: GestureDetector(
         onTap: () {
           if ((widget.isUpdateScreen ?? false) == false) {

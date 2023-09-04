@@ -23,7 +23,7 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
       initialBinding: ControllerBinding(),
       theme: ThemeData(
         brightness: Brightness.light,
-        primarySwatch: Colors.green,
+        primarySwatch: Colors.teal,
         inputDecorationTheme: const InputDecorationTheme(
           filled: true,
           fillColor: Colors.white,
